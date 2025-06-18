@@ -10,15 +10,15 @@ dotenv.config();
 
 
 const app = express();
-const PORT = process.env.PORT
+const PORT = process.env.PORT 
 
 // middleware
 app.use(express.json())
-app.use(rateLimiter)
+// app.use(rateLimiter)
 app.use(cors({
-  origin:"http://localhost:5173",
+  origin: "http://localhost:5173",
 }))
-//explanation of middleware
+// explanation of middleware
 // app.use((req, res, next) => {
 //     console.log(`Request method is ${req.method} && REQUEST url is ${req.url}`);
 //     next();
