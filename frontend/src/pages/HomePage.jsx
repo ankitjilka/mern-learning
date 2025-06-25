@@ -6,35 +6,55 @@ import toast from "react-hot-toast";
 import NoteCard from "../components/NoteCard";
 import NotesNotFound from "../components/NotesNotFound";
 import NoteDetailPage from "./NoteDetailPage";
+import { useLocation } from "react-router-dom";
+
+import { useRef } from "react";
 
 
 const HomePage = () => {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [notes,setNotes] = useState([])
   const [loading,setLoading] = useState(true)
+  const location = useLocation();
+  const hasAppendedRef = useRef(false);
   
   useEffect(() => {
     const fetchNotes = async () => {
+      console.log("Fetching all notes from server...");
+      console.log("👀 Location state:", location.state);
+
       try {
         const res = await api.get("/notes");
-        console.log(res.data);
-        setNotes(res.data);
-        setIsRateLimited(false)
-      } catch (error){
-        console.log("Error while fetching data");
-        if(error.response.state === 429){
-          setIsRateLimited(true)
-        } else {
-          toast.error("Failed to load data")
+        let allNotes = res.data;
+      // Check for newNote in location.state
+        if (location.state?.newNote) {
+        console.log("Merging new note with server data...");
+        const isAlreadyIncluded = allNotes.some(
+          note => note._id === location.state.newNote._id
+        );
+        if (!isAlreadyIncluded) {
+          allNotes = [...allNotes, location.state.newNote];
         }
-      } finally {
-        setLoading(false)
+        // Clear the state after using
+        window.history.replaceState({}, document.title);
       }
+      if (location.state?.deletedNoteId) {
+        allNotes = allNotes.filter(n => n._id !== location.state.deletedNoteId);
+        window.history.replaceState({}, document.title);
+      }
+
+      setNotes(allNotes);
+      setIsRateLimited(false);
+    } catch (err) {
+      toast.error("Failed to load data");
+    } finally {
+      setLoading(false);
+    }
     };
   
     fetchNotes();
-    
-  },[])
+  }, [location.state]);
+  
 
   return (
     <div className="min-h-screen">

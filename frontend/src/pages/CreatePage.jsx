@@ -21,12 +21,12 @@ const CreatePage = () => {
 
     setLoading(true)
     try{
-      await api.post("/notes", {
+      const res = await api.post("/notes", {
         title,
         content,
       });
       toast.success("Note created successfully!!");
-      navigate("/")
+      navigate("/", { state: { newNote: res.data } })
     } catch (error) {
       console.log("Error creating note", error);
       if (error.response.status === 429) {
