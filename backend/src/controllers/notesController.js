@@ -14,7 +14,7 @@ export async function getAllNotes(_,res) {
 export async function findNote(req,res) {
     try {
         const findedNote = await Note.findById(req.params.id);
-        if(!findedNote) res.status(404).json({ message: "note not found"});
+        if(!findedNote) return res.status(404).json({ message: "note not found"});
         res.status(200).json(findedNote);
     } catch (error) {
        console.error("error in findNotes::",error);
@@ -50,7 +50,7 @@ export async function updateNotes (req,res) {
 export async function deleteNotes(req,res) {
     try {
         const deletedNote = await Note.findByIdAndDelete(req.params.id)
-        if(!deletedNote) res.status(404).json({message: "Note not found"})
+        if(!deletedNote) return res.status(404).json({message: "Note not found"})
         res.status(200).json({ message: "Note deleted successfully"});
     } catch (error) {
         console.error("error in deleteNotes::",error);

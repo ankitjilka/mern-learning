@@ -4,13 +4,15 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { LoaderIcon } from 'lucide-react';
 import api from "../lib/axios";
+import { useNotes } from "../context/NotesContext";
 
 
 const NoteDetailPage = () => {
   const [note,setNote] = useState(null);
   const [loading,setLoading] = useState(true)
   const [saving,setSaving] = useState(false)
-
+  const { deleteNote, updateNote } = useNotes()
+  
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -35,8 +37,9 @@ const NoteDetailPage = () => {
 
     try {
       await api.delete(`/notes/${id}`);
+      deleteNote(id);
       toast.success("Note deleted");
-      navigate("/", { state: { deletedNoteId: id } });
+      navigate("/");
     } catch (error) {
       console.log("error deleting  the note:", error);
       toast.error("Failed to delete note");
@@ -52,6 +55,7 @@ const NoteDetailPage = () => {
 
     try {
       await api.put(`/notes/${id}`, note)
+      updateNote(note);
       toast.success("Note updated sucessfully ");
       navigate("/");
     } catch (error) {
