@@ -43,6 +43,7 @@ export const NotesProvider = ({ children }) => {
   return (
     <NotesContext.Provider value={{
       notes,
+      setNotes,
       loading,
       isRateLimited,
       addNote,

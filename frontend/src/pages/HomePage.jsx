@@ -12,7 +12,7 @@ import { useRef } from "react";
 
 
 const HomePage = () => {
-  const { notes, loading, isRateLimited } = useNotes();
+  const { notes, setNotes, loading, isRateLimited } = useNotes();
 
   // const [isRateLimited, setIsRateLimited] = useState(false);
   // const [notes,setNotes] = useState([])
